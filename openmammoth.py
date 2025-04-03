@@ -73,8 +73,13 @@ class OpenMammoth:
 {Style.RESET_ALL}"""
 
     def setup_logging(self):
+        # Create /etc/securonis directory if it doesn't exist
+        log_dir = "/etc/securonis"
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            
         logging.basicConfig(
-            filename='openmammoth.log',
+            filename=os.path.join(log_dir, 'openmammoth.log'),
             level=logging.DEBUG if self.debug_mode else logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s'
         )
@@ -681,7 +686,7 @@ class OpenMammoth:
         print(f"{Fore.BLUE}License: MIT{Style.RESET_ALL}")
         print("\nOpenMammoth is a powerful network protection tool designed to")
         print("secure your system against various types of cyber attacks.")
-        print("This is a OpenMammoth Securonis Edition Forked and simplified for Securonis Linux ")
+        print("This version is a OpenMammoth Securonis Edition Forked and simplified for Securonis Linux ")
         print("\nFeatures:")
         print(f"{Fore.GREEN}✓{Style.RESET_ALL} Real-time packet analysis")
         print(f"{Fore.GREEN}✓{Style.RESET_ALL} Multiple protection levels")
@@ -695,12 +700,11 @@ class OpenMammoth:
         print(f"{Fore.RED}•{Style.RESET_ALL} SYN Flood")
         print(f"{Fore.RED}•{Style.RESET_ALL} UDP Flood")
         print(f"{Fore.RED}•{Style.RESET_ALL} ICMP Flood")
-        print(f"{Fore.RED}•{Style.RED} DNS Amplification")
+        print(f"{Fore.RED}•{Style.RESET_ALL} DNS Amplification")
         print(f"{Fore.RED}•{Style.RESET_ALL} Fragment Attacks")
         print(f"{Fore.RED}•{Style.RESET_ALL} Malformed Packets")
         print(f"{Fore.RED}•{Style.RESET_ALL} IP Spoofing")
-        print(f"\n{Fore.CYAN}GitHub: https://github.com/ro{Style.RESET_ALL}")
-        print(f"{Fore.CYAN}Website: https://openmammoth.org{Style.RESET_ALL}")
+        print(f"\n{Fore.CYAN}GitHub: https://github.com/root0emir{Style.RESET_ALL}")
         input("\nPress Enter to return to main menu...")
 
     def get_available_interfaces(self):
