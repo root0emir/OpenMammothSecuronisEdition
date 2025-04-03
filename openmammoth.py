@@ -36,9 +36,20 @@ class OpenMammoth:
         self.connection_tracker = {}
         self.packet_rates = {}
         self.is_running = False
+        self.config_dir = "/etc/securonis"
+        if not os.path.exists(self.config_dir):
+            os.makedirs(self.config_dir)
         self.load_config()
         self.setup_logging()
         self.available_interfaces = self.get_available_interfaces()
+        if not self.available_interfaces:
+            print(f"{Fore.RED}Warning: No network interfaces found!{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please check and configure your network interfaces.{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Recommended steps:{Style.RESET_ALL}")
+            print("1. Check your network connection")
+            print("2. Configure your network interfaces")
+            print("3. Restart the program")
+            input("\nPress Enter to return to main menu...")
 
     def get_ascii_art(self):
         return f"""{Fore.RED}
@@ -86,7 +97,8 @@ class OpenMammoth:
 
     def load_config(self):
         try:
-            with open('config.json', 'r') as f:
+            config_path = os.path.join(self.config_dir, 'config.json')
+            with open(config_path, 'r') as f:
                 config = json.load(f)
                 self.protection_level = config.get('protection_level', 2)
                 self.advanced_protection = config.get('advanced_protection', False)
@@ -102,7 +114,8 @@ class OpenMammoth:
             'debug_mode': self.debug_mode,
             'interface': self.interface
         }
-        with open('config.json', 'w') as f:
+        config_path = os.path.join(self.config_dir, 'config.json')
+        with open(config_path, 'w') as f:
             json.dump(config, f, indent=4)
 
     def packet_handler(self, packet):
@@ -734,7 +747,13 @@ class OpenMammoth:
         """Showing Interfaces"""
         print(f"\n{Fore.CYAN}=== Available Network Interfaces ==={Style.RESET_ALL}")
         if not self.available_interfaces:
-            print(f"{Fore.RED}No network interfaces found!{Style.RESET_ALL}")
+            print(f"{Fore.RED}Warning: No network interfaces found!{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please check and configure your network interfaces.{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Recommended steps:{Style.RESET_ALL}")
+            print("1. Check your network connection")
+            print("2. Configure your network interfaces")
+            print("3. Restart the program")
+            input("\nPress Enter to return to main menu...")
             return False
         
         for idx, iface in enumerate(self.available_interfaces, 1):
@@ -747,12 +766,22 @@ class OpenMammoth:
 
     def select_interface(self):
         """Chosing interface"""
+        if not self.available_interfaces:
+            print(f"{Fore.RED}Warning: No network interfaces found!{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Please check and configure your network interfaces.{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Recommended steps:{Style.RESET_ALL}")
+            print("1. Check your network connection")
+            print("2. Configure your network interfaces")
+            print("3. Restart the program")
+            input("\nPress Enter to return to main menu...")
+            return False
+        
         if not self.display_interfaces():
             return False
         
         while True:
             try:
-                choice = input("\nSelect interface number (or 'q' to quit): ")
+                choice = input("\nSelect interface (1-{}) or 'q' to quit: ".format(len(self.available_interfaces)))
                 if choice.lower() == 'q':
                     return False
                 
@@ -762,7 +791,7 @@ class OpenMammoth:
                     print(f"{Fore.GREEN}Selected interface: {self.interface}{Style.RESET_ALL}")
                     return True
                 else:
-                    print(f"{Fore.RED}Invalid selection!{Style.RESET_ALL}")
+                    print(f"{Fore.RED}Invalid selection! Please select an interface from the list.{Style.RESET_ALL}")
             except ValueError:
                 print(f"{Fore.RED}Please enter a valid number!{Style.RESET_ALL}")
 
